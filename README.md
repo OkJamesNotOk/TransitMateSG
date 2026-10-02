@@ -39,3 +39,10 @@ The application combines live bus arrival information, nearby bus stops, route i
 
    ```bash
    npm install
+
+## Environment Variables
+
+This project requires an LTA DataMall API key. Rename the `.env.example` file to `.env`, then replace the placeholder value with your own API key:
+
+```
+EXPO_PUBLIC_LTA_API_KEY=YOUR_LTA_KEY
