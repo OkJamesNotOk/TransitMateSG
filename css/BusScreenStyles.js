@@ -213,11 +213,19 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
 
+  nearbyTitleContainer: {
+    marginBottom: 8,
+  },
+
   nearbyTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 10,
     color: COLORS.text,
+  },
+
+  nearbyHint: {
+    fontSize: 11,
+    color: COLORS.secondaryText,
   },
 
   nearbyList: {

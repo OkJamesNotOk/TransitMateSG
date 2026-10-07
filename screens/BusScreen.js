@@ -288,15 +288,22 @@ export default function BusScreen({
         setShowDropdown={setShowDropdown}
       />
 
+
       {/** Nearby Bus stops */}
-      <Text 
-        style={styles.nearbyTitle}
-        numberOfLines={1}
-        adjustsFontSizeToFit
-        minimumFontScale={0.75}
-      >
-        Nearby Bus Stops - Swipe to see more →
-      </Text>
+      <View style={styles.nearbyTitleContainer}>
+        <Text style={styles.nearbyTitle}>
+          Nearby Bus Stops
+        </Text>
+
+        <Text 
+          style={styles.nearbyHint}
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          minimumFontScale={0.75}
+        >
+          Swipe to see more →
+        </Text>
+      </View>
 
       {/** horizontal list of nearby Bus stops */}
       <FlatList

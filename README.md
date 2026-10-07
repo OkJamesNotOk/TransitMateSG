@@ -1,5 +1,10 @@
 # TransitMateSG
 
+<p align="center">
+  <img src="preview/preview1.png" alt="TransitMateSG Preview 1" width="200"/>
+  <img src="preview/preview2.png" alt="TransitMateSG Preview 2" width="200"/>
+</p>
+
 TransitMateSG is a React Native mobile application developed using Expo to support public transport commuters in Singapore.
 
 The application combines live bus arrival information, nearby bus stops, route information, location services, notifications, and weather information in a single mobile application.
