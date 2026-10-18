@@ -7,7 +7,7 @@ import {
   ScrollView
 } from 'react-native';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import BusCard from '../components/BusCard';
@@ -24,12 +24,14 @@ import {
   getBusArrivals,
 } from '../services/busService';
 
-import styles from '../css/BusScreenStyles';
-import COLORS from '../css/colors'
+import createStyles from '../css/BusScreenStyles';
+import { useTheme } from '../context/ThemeContext';
 
 export default function BusScreen({
     navigation, route, busData, selectedCoordinates, locationMode,
   }) {
+  const { colors: COLORS } = useTheme();
+  const styles = useMemo(() => createStyles(COLORS), [COLORS]);
 
   // store bus arrivals for the selected bus stop
   const [busList, setBusList] = useState([]);
@@ -364,7 +366,7 @@ export default function BusScreen({
                 color={
                   bookmarkedStops.some(
                     (stop) => stop.BusStopCode === busStopCode
-                  ) ? 'white' : COLORS.secondaryText
+                  ) ? COLORS.onAccent : COLORS.secondaryText
                 }
               />
             </TouchableOpacity>
@@ -413,7 +415,7 @@ export default function BusScreen({
           <Ionicons
             name='refresh-outline'
             size={20}
-            color={COLORS.text}
+            color={COLORS.onAccent}
           />
           <Text style={styles.buttonText}>
             Refresh
@@ -427,7 +429,7 @@ export default function BusScreen({
           <Ionicons
             name='star'
             size={20}
-            color={COLORS.text}
+            color={COLORS.onAccent}
           />
           <Text 
             style={styles.buttonText}
@@ -446,7 +448,7 @@ export default function BusScreen({
           <Ionicons
             name='sync-outline'
             size={20}
-            color={COLORS.text}
+            color={COLORS.onAccent}
           />
           <Text 
             style={styles.buttonText}

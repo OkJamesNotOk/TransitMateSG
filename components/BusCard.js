@@ -1,12 +1,15 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-
-import styles from '../css/BusCardStyles';
-import COLORS from '../css/colors';
+import { useMemo } from 'react';
+import createStyles from '../css/BusCardStyles';
+import { useTheme } from '../context/ThemeContext';
 
 export default function BusCard({ 
     bus, index, onPress, onEtaPress,
   }) {
+
+  const { colors: COLORS } = useTheme();
+  const styles = useMemo(() => createStyles(COLORS), [COLORS]);
   // calculate estimated time in mins
   const getMinutesAway = (estimatedArrival) => {
     if (!estimatedArrival) {

@@ -1,8 +1,9 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
-import styles from '../css/BusScreenStyles'
+import createStyles from '../css/BusScreenStyles';
+import { useTheme } from '../context/ThemeContext';
 
 export default function BusMap({
   userLocation,
@@ -14,12 +15,14 @@ export default function BusMap({
 }) {
   // keep track of the bus stop selected on the map
   const [selectedStopCode, setSelectedStopCode] = useState(null);
+  const { colors: COLORS } = useTheme();
+  const styles = useMemo(() => createStyles(COLORS), [COLORS]);
 
   // wait until a location is available before displaying the map
   if (!userLocation) {
     return (
       <View>
-        <Text>Loading map...</Text>
+        <Text style={styles.mapLoadingText}>Loading map...</Text>
       </View>
     );
   }

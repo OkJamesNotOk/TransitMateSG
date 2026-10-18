@@ -7,16 +7,25 @@ import {
   TextInput,
 } from 'react-native';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
-import styles from '../css/SettingScreenStyles';
+import createStyles from '../css/SettingScreenStyles';
+import { useTheme } from '../context/ThemeContext';
 import useResponsiveSpacing from '../uitilities/useResponsiveSpacing';
+
+const themeOptions = [
+  { label: 'Dark', value: 'dark' },
+  { label: 'Light', value: 'light' },
+  { label: 'Midnight', value: 'midnight' },
+];
 
 export default function SettingsScreen({
     updateBusData, isUpdating, 
     setSelectedCoordinates, removeBusData, setLocationMode, locationMode,
   })
 {
+  const { theme, setTheme, colors: COLORS } = useTheme();
+  const styles = useMemo(() => createStyles(COLORS), [COLORS]);
 
   // store manually entered coordinates
   const [latitude, setLatitude] = useState('');
@@ -78,6 +87,30 @@ export default function SettingsScreen({
       onPress={Keyboard.dismiss}
     >
       <View>
+        {/* Theme selection */}
+        <Text style={styles.appearanceTitle}>Appearance</Text>
+        <View style={styles.themeRow}>
+          {themeOptions.map((option) => (
+            <TouchableOpacity
+              key={option.value}
+              style={[
+                styles.themeOption,
+                theme === option.value && styles.themeOptionActive,
+              ]}
+              onPress={() => setTheme(option.value)}
+              accessibilityRole="radio"
+              accessibilityState={{ selected: theme === option.value }}
+            >
+              <Text style={[
+                styles.themeOptionText,
+                theme === option.value && styles.themeOptionTextActive,
+              ]}>
+                {option.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
         {/* switch between GPS and manual location */}
         <View style={styles.locationSwitch}>
           <TouchableOpacity
@@ -87,7 +120,10 @@ export default function SettingsScreen({
             ]}
             onPress={() => setLocationMode('gps')}
           >
-            <Text style={styles.buttonText}>GPS</Text>
+            <Text style={[
+              styles.locationOptionText,
+              locationMode === 'gps' && styles.locationOptionTextActive,
+            ]}>GPS</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -97,7 +133,10 @@ export default function SettingsScreen({
             ]}
             onPress={() => setLocationMode('manual')}
           >
-            <Text style={styles.buttonText}>Manual</Text>
+            <Text style={[
+              styles.locationOptionText,
+              locationMode === 'manual' && styles.locationOptionTextActive,
+            ]}>Manual</Text>
           </TouchableOpacity>
         </View>
 
@@ -110,6 +149,7 @@ export default function SettingsScreen({
             value={latitude}
             onChangeText={(text) => filterCoordinateInput(text, setLatitude)}
             placeholder="e.g. 1.290"
+            placeholderTextColor={COLORS.secondaryText}
             keyboardType="default"
             editable={locationMode === 'manual'}
           />
@@ -123,6 +163,7 @@ export default function SettingsScreen({
             value={longitude}
             onChangeText={(text) => filterCoordinateInput(text, setLongitude)}
             placeholder="e.g. 103.851"
+            placeholderTextColor={COLORS.secondaryText}
             keyboardType="default"
             editable={locationMode === 'manual'}
           />

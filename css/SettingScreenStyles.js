@@ -1,8 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import COLORS from './colors';
-
-const styles = StyleSheet.create({
+const createStyles = (COLORS) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
@@ -52,7 +50,7 @@ const styles = StyleSheet.create({
   },
 
   buttonText: {
-    color: 'white',
+    color: COLORS.onAccent,
     fontWeight: 'bold',
   },
 
@@ -91,10 +89,56 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.accent,
   },
 
+  locationOptionText: {
+    color: COLORS.text,
+    fontWeight: 'bold',
+  },
+
+  locationOptionTextActive: {
+    color: COLORS.onAccent,
+  },
+
   disabledButton: {
     opacity: 0.4,
   },
 
+    appearanceTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: COLORS.text,
+    marginBottom: 12,
+  },
+
+  themeRow: {
+    flexDirection: 'row',
+    gap: 6,
+    marginBottom: 25,
+  },
+
+  themeOption: {
+    flex: 1,
+    paddingVertical: 12,
+    backgroundColor: COLORS.card,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+
+  themeOptionActive: {
+    backgroundColor: COLORS.accent,
+    borderColor: COLORS.accent,
+  },
+
+  themeOptionText: {
+    color: COLORS.text,
+    fontWeight: 'bold',
+  },
+
+  themeOptionTextActive: {
+    color: COLORS.onAccent,
+  },
+
 });
 
-export default styles;
+export default createStyles;

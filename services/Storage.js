@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const BUS_STOPS_KEY = 'busStops';
 const BUS_ROUTES_KEY = 'busRoutes';
 const BOOKMARKED_STOPS_KEY = 'bookmarkedStops';
+const THEME_KEY = 'selectedTheme';
 
 // Save appl data so it can be reused between sessions
 const saveCache = async (key, data) => {
@@ -45,6 +46,7 @@ export {
   BUS_STOPS_KEY,
   BUS_ROUTES_KEY,
   BOOKMARKED_STOPS_KEY,
+  THEME_KEY,
   saveCache,
   getCache,
   clearBusDataCache,

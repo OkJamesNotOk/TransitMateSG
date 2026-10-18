@@ -1,10 +1,13 @@
 import { View, Text, FlatList, } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-
-import styles from '../css/BusRouteScreenStyles';
+import { useMemo } from 'react';
+import createStyles from '../css/BusRouteScreenStyles';
+import { useTheme } from '../context/ThemeContext';
 import useBookmarks from '../uitilities/useBookmarks';
 
 export default function BusRouteScreen({ route }) {
+  const { colors: COLORS } = useTheme();
+  const styles = useMemo(() => createStyles(COLORS), [COLORS]);
   // get selected bus route information
   const {
     serviceNo,
@@ -68,7 +71,7 @@ export default function BusRouteScreen({ route }) {
                 <Ionicons
                   name="star"
                   size={20}
-                  color="white"
+                  color={COLORS.text}
                 />
               )}
             </View>

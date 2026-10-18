@@ -1,12 +1,15 @@
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-
-import styles from '../css/BusBookmarkStyles';
-import COLORS from '../css/colors';
+import { useMemo } from 'react';
+import createStyles from '../css/BusBookmarkStyles';
+import { useTheme } from '../context/ThemeContext';
 
 import useBookmarks from '../uitilities/useBookmarks';
 
 export default function BusBookmarkScreen({ navigation }) {
+  const { colors: COLORS } = useTheme();
+  const styles = useMemo(() => createStyles(COLORS), [COLORS]);
+  
   // load stored bookmarked bus stops
   const { bookmarkedStops, toggleBookmark, } = useBookmarks();
 

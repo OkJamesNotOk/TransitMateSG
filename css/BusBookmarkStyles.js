@@ -1,8 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import COLORS from './colors'
-
-const styles = StyleSheet.create({
+const createStyles = (COLORS) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
@@ -78,7 +76,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 30,
   },
+
+  buttonText: {
+    color: COLORS.onAccent,
+    fontWeight: 'bold',
+  },
   
 });
 
-export default styles;
+export default createStyles;

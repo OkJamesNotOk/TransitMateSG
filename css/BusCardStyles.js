@@ -1,8 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import COLORS from './colors'
-
-const styles = StyleSheet.create({
+const createStyles = (COLORS) => StyleSheet.create({
   card: {
     padding: 15,
     borderRadius: 12,
@@ -57,4 +55,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default styles;
+export default createStyles;

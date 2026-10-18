@@ -5,17 +5,20 @@ import {
   ScrollView
 } from 'react-native';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import ForecastCard from '../components/ForecastCard';
 import { getWeather } from '../services/weatherService';
-import styles from '../css/WeatherScreenStyles';
-import COLORS from '../css/colors';
+import createStyles from '../css/WeatherScreenStyles';
+import { useTheme } from '../context/ThemeContext';
 import { getWeatherCondition, getWeatherIcon } from '../uitilities/weatherFunctions';
 import useResponsiveSpacing from '../uitilities/useResponsiveSpacing';
 
 export default function WeatherScreen({selectedCoordinates, locationMode}) {
+  const { colors: COLORS } = useTheme();
+  const styles = useMemo(() => createStyles(COLORS), [COLORS]);
+  
   // store current weather and forecast data
   const [currentTemp, setCurrentTemp] = useState(null);
   const [forecast, setForecast] = useState([]);
@@ -129,19 +132,23 @@ export default function WeatherScreen({selectedCoordinates, locationMode}) {
     return COLORS.weatherClear;
   };
 
+  // Select readable text color based on weather background
+  const weatherBackground = getWeatherBackground(weatherCode);
+  const weatherTextColor =
+    weatherBackground === COLORS.weatherRain ||
+    weatherBackground === COLORS.weatherThunderstorm
+      ? '#FFFFFF'
+      : '#0F172A';
+
   const {screenPaddingWidth, screenPaddingHeight, } = useResponsiveSpacing(); 
 
   // UI
   return (
     <ScrollView 
       style={[
-          styles.container,
-              {
-                backgroundColor: weatherCode !== null
-                ? getWeatherBackground(weatherCode)
-                : COLORS.weatherClear
-              }
-        ]}
+        styles.container,
+        { backgroundColor: weatherBackground }
+      ]}
       contentContainerStyle={[
         styles.contentContainer,
         { 
@@ -156,10 +163,10 @@ export default function WeatherScreen({selectedCoordinates, locationMode}) {
         <Ionicons
           name="partly-sunny"
           size={28}
-          color={COLORS.text}
+          color={weatherTextColor}
         />
 
-        <Text style={styles.title}>
+        <Text style={[styles.title, { color: weatherTextColor }]}>
           Current Weather
         </Text>
       </View>
@@ -239,7 +246,7 @@ export default function WeatherScreen({selectedCoordinates, locationMode}) {
       </View>
 
       {/* 3 day weather forecast */}
-      <Text style={styles.subtitle}>
+      <Text style={[styles.subtitle, { color: weatherTextColor }]}>
         3 Day Forecast
       </Text>
 

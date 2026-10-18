@@ -1,13 +1,16 @@
 import { View, TouchableOpacity, Text, } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-
-import styles from '../css/NearbyStopCardStyles';
-import COLORS from '../css/colors';
+import { useMemo } from 'react';
+import createStyles from '../css/NearbyStopCardStyles';
+import { useTheme } from '../context/ThemeContext';
 
 export default function NearbyStopCard({
   item, index, selectBusStop,
   toggleBookmark, isBookmarked,
 }) {
+  const { colors: COLORS } = useTheme();
+  const styles = useMemo(() => createStyles(COLORS), [COLORS]);
+  
   return(
     <TouchableOpacity
       style={[
@@ -35,7 +38,7 @@ export default function NearbyStopCard({
           <Ionicons
             name={isBookmarked ? 'star' : 'star-outline'}
             size={20}
-            color={isBookmarked ? 'white' : COLORS.secondaryText}
+            color={isBookmarked ? COLORS.onAccent : COLORS.secondaryText}
           />
         </TouchableOpacity>
       </View>

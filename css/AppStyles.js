@@ -1,8 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import COLORS from './colors';
-
-const styles = StyleSheet.create({
+const createStyles = (COLORS) => StyleSheet.create({
   modalOverlay: {
     flex: 1,
     justifyContent: 'center',
@@ -23,4 +21,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default styles;
+export default createStyles;

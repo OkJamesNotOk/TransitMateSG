@@ -6,9 +6,10 @@ import {
   TouchableOpacity,
   Keyboard,
 } from 'react-native';
+import { useMemo } from 'react';
 
-import styles from '../css/BusScreenStyles';
-import COLORS from '../css/colors';
+import createStyles from '../css/BusScreenStyles';
+import { useTheme } from '../context/ThemeContext';
 
 // search bar component for seacrching bus stop 
 export default function BusStopSearch({
@@ -19,6 +20,9 @@ export default function BusStopSearch({
   showDropdown,
   setShowDropdown,
 }) {
+  const { colors: COLORS } = useTheme();
+  const styles = useMemo(() => createStyles(COLORS), [COLORS]);
+  
   // filter bus stops by code, name or road
   const filterBusStops = () => {
     const search = searchCode.toLowerCase();

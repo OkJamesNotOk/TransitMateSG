@@ -1,11 +1,14 @@
 import { View, Text, } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import COLORS from '../css/colors';
-
+import { useMemo } from 'react';
 import { getWeatherCondition, getWeatherIcon } from '../uitilities/weatherFunctions';
-import styles from '../css/WeatherScreenStyles';
+import createStyles from '../css/WeatherScreenStyles';
+import { useTheme } from '../context/ThemeContext';
 
 export default function ForecastCard({ day }) {
+  const { colors: COLORS } = useTheme();
+  const styles = useMemo(() => createStyles(COLORS), [COLORS]);
+  
   // format date for display
   const formattedDate = new Date(day.date).toLocaleDateString(
     'en-SG',

@@ -1,8 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import COLORS from './colors'
-
-const styles = StyleSheet.create({
+const createStyles = (COLORS) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
@@ -48,7 +46,7 @@ const styles = StyleSheet.create({
   },
 
   buttonText: {
-    color: 'white',
+    color: COLORS.onAccent,
     fontWeight: 'bold',
   },
 
@@ -272,10 +270,14 @@ const styles = StyleSheet.create({
   },
 
   notificationBannerText: {
-    color: 'white',
+    color: COLORS.onAccent,
     fontWeight: 'bold',
+  },
+
+  mapLoadingText: {
+    color: COLORS.text,
   },
 
 });
 
-export default styles;
+export default createStyles;

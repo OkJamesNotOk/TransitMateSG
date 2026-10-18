@@ -1,10 +1,11 @@
 import { Modal, View, Text, ActivityIndicator, } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import * as ScreenOrientation from 'expo-screen-orientation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import * as Notifications from 'expo-notifications';
 
 import BusScreen from './screens/BusScreen';
 import WeatherScreen from './screens/WeatherScreen';
@@ -13,9 +14,10 @@ import BusBookmarkScreen from './screens/BusBookmarkScreen';
 import SettingsScreen from './screens/SettingScreen';
 import useBusData from './uitilities/useBusData';
 
-import COLORS from './css/colors';
-import styles from './css/AppStyles';
-import * as Notifications from 'expo-notifications';
+import { useTheme } from './context/ThemeContext';
+import createStyles from './css/AppStyles';
+import { StatusBar } from 'expo-status-bar';
+import { ThemeProvider } from './context/ThemeContext';
 
 // Bottom tab navigation for the main bus, weather and settings screens
 const Tab = createBottomTabNavigator();
@@ -34,6 +36,8 @@ Notifications.setNotificationHandler({
 
 // Handles navigation between the main Bus screen, bus routes and bookmarks
 function BusStackNavigator({ busData, selectedCoordinates, locationMode, }) {
+  const { colors: COLORS } = useTheme();
+
   return (
     <BusStack.Navigator
       screenOptions={{
@@ -86,7 +90,26 @@ function BusStackNavigator({ busData, selectedCoordinates, locationMode, }) {
 }
 
 // Main App
-export default function App() {
+function AppContent() {
+  const { theme, colors: COLORS } = useTheme();
+  const styles = useMemo(() => createStyles(COLORS), [COLORS]);
+
+  const navigationTheme = useMemo(() => {
+    const baseTheme = theme === 'light' ? DefaultTheme : DarkTheme;
+
+    return {
+      ...baseTheme,
+      colors: {
+        ...baseTheme.colors,
+        primary: COLORS.accent,
+        background: COLORS.background,
+        card: COLORS.background,
+        text: COLORS.text,
+        border: COLORS.border,
+      },
+    };
+  }, [theme, COLORS]);
+
   // Loads bus stop and bus route data used throughout the app
   const busData = useBusData();
   // coordianted for manual location mmode
@@ -102,7 +125,9 @@ export default function App() {
   }, []);
 
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={navigationTheme}>
+      <StatusBar style={theme === 'light' ? 'dark' : 'light'} />
+
       {/* Main bottom navigation for the app */}
       <Tab.Navigator 
         initialRouteName="Bus"
@@ -201,7 +226,7 @@ export default function App() {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <ActivityIndicator size="large" />
+            <ActivityIndicator size="large" color={COLORS.accent} />
             <Text style={styles.modalText}>
               Updating Bus Data...
             </Text>
@@ -210,5 +235,13 @@ export default function App() {
       </Modal>
       
     </NavigationContainer>
+  );
+}
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }
