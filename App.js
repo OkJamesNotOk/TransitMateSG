@@ -1,4 +1,4 @@
-import { Modal, View, Text, ActivityIndicator, } from 'react-native';
+import { Modal, View, Text, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -12,6 +12,7 @@ import WeatherScreen from './screens/WeatherScreen';
 import BusRouteScreen from './screens/BusRouteScreen';
 import BusBookmarkScreen from './screens/BusBookmarkScreen';
 import SettingsScreen from './screens/SettingScreen';
+import ThemeSelectionScreen from './screens/ThemeSelectionScreen';
 import useBusData from './uitilities/useBusData';
 
 import { useTheme } from './context/ThemeContext';
@@ -24,6 +25,9 @@ const Tab = createBottomTabNavigator();
 
 // Stack navigation for screens in the Bus screen
 const BusStack = createNativeStackNavigator();
+
+// Stack navigation for screens settings screen theme selection
+const SettingsStack = createNativeStackNavigator();
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -86,6 +90,51 @@ function BusStackNavigator({ busData, selectedCoordinates, locationMode, }) {
       />
 
     </BusStack.Navigator>
+  );
+}
+
+// Handles navigation between Settings and Theme Selection
+function SettingsStackNavigator({ busData, setSelectedCoordinates, locationMode, setLocationMode }) {
+  const { colors: COLORS } = useTheme();
+
+  return (
+    <SettingsStack.Navigator
+      screenOptions={{
+        headerStyle: { backgroundColor: COLORS.background },
+        headerTintColor: COLORS.text,
+        contentStyle: { backgroundColor: COLORS.background },
+      }}
+    >
+      <SettingsStack.Screen
+        name="SettingsHome"
+        options={({ navigation }) => ({
+          title: 'Settings',
+          headerRight: () => (
+            <TouchableOpacity onPress={() => navigation.navigate('ThemeSelection')}>
+              <Text style={{ color: COLORS.accent }}>Themes</Text>
+            </TouchableOpacity>
+          ),
+        })}
+      >
+        {(props) => (
+          <SettingsScreen
+            {...props}
+            updateBusData={busData.updateBusData}
+            isUpdating={busData.isUpdating}
+            setSelectedCoordinates={setSelectedCoordinates}
+            removeBusData={busData.removeBusData}
+            locationMode={locationMode}
+            setLocationMode={setLocationMode}
+          />
+        )}
+      </SettingsStack.Screen>
+
+      <SettingsStack.Screen
+        name="ThemeSelection"
+        component={ThemeSelectionScreen}
+        options={{ title: 'Color Theme' }}
+      />
+    </SettingsStack.Navigator>
   );
 }
 
@@ -193,6 +242,7 @@ function AppContent() {
           options={{
             title: 'Settings',
             tabBarLabel: 'Settings',
+            headerShown: false,
             tabBarIcon: ({ color, size }) => (
               <Ionicons
                 name="settings-outline"
@@ -202,13 +252,10 @@ function AppContent() {
             ),
           }}
         >
-          {(props) => (
-            <SettingsScreen
-              {...props}
-              updateBusData={busData.updateBusData}
-              isUpdating={busData.isUpdating}
+          {() => (
+            <SettingsStackNavigator
+              busData={busData}
               setSelectedCoordinates={setSelectedCoordinates}
-              removeBusData={busData.removeBusData}
               locationMode={locationMode}
               setLocationMode={setLocationMode}
             />
