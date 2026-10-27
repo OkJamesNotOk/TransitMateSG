@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { THEMES } from '../css/colors';
-import { THEME_KEY, saveCache, getCache } from '../services/Storage';
+import { THEME_KEY, AUTO_THEME_KEY, saveCache, getCache } from '../services/Storage';
 
 // shared theme context
 const ThemeContext = createContext(null);
@@ -12,6 +12,7 @@ const isValidTheme = (value) =>
 function ThemeProvider({ children }) {
   // Store the currently selected theme
   const [theme, setThemeState] = useState('dark');
+  const [autoThemeOnStartup, setAutoThemeOnStartupState] = useState(false);
   const [isReady, setIsReady] = useState(false);
 
   // Restore the previously selected theme
@@ -21,8 +22,27 @@ function ThemeProvider({ children }) {
     const loadTheme = async () => {
       try {
         const savedTheme = await getCache(THEME_KEY);
-        if (active && isValidTheme(savedTheme)) {
-          setThemeState(savedTheme);
+        const savedAutoTheme = await getCache(AUTO_THEME_KEY);
+        if (!active) return;
+
+        const autoEnabled = savedAutoTheme === true;
+        let selectedTheme = isValidTheme(savedTheme) ? savedTheme : 'dark';
+
+        if (autoEnabled) {
+          const availableThemes = Object.keys(THEMES).filter(
+            (themeKey) => themeKey !== selectedTheme
+          );
+
+          if (availableThemes.length > 0) {
+            const randomIndex = Math.floor(Math.random() * availableThemes.length);
+            selectedTheme = availableThemes[randomIndex];
+            await saveCache(THEME_KEY, selectedTheme);
+          }
+        }
+
+        if (active) {
+          setThemeState(selectedTheme);
+          setAutoThemeOnStartupState(autoEnabled);
         }
       } catch (error) {
         console.log('Failed to load theme:', error);
@@ -43,6 +63,11 @@ function ThemeProvider({ children }) {
     return await saveCache(THEME_KEY, newTheme);
   };
 
+  const setAutoThemeOnStartup = async (enabled) => {
+    setAutoThemeOnStartupState(enabled);
+    return await saveCache(AUTO_THEME_KEY, enabled);
+  };
+
   // Wait until the saved theme has been loaded
   if (!isReady) return null;
 
@@ -51,6 +76,8 @@ function ThemeProvider({ children }) {
       theme,
       setTheme,
       colors: THEMES[theme],
+      autoThemeOnStartup,
+      setAutoThemeOnStartup,
     }}>
       {children}
     </ThemeContext.Provider>

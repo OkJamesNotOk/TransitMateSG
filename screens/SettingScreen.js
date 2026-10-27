@@ -1,35 +1,25 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Pressable,
-  Keyboard,
-  TextInput,
-} from 'react-native';
+import { View, Text, TouchableOpacity, Pressable, Keyboard, Switch } from 'react-native';
 
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 
 import createStyles from '../css/SettingScreenStyles';
 import { useTheme } from '../context/ThemeContext';
 import useResponsiveSpacing from '../uitilities/useResponsiveSpacing';
-
-const themeOptions = [
-  { label: 'Dark', value: 'dark' },
-  { label: 'Light', value: 'light' },
-  { label: 'Midnight', value: 'midnight' },
-];
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { THEMES } from '../css/colors';
 
 export default function SettingsScreen({
-    updateBusData, isUpdating, 
+    navigation, updateBusData, isUpdating, 
     setSelectedCoordinates, removeBusData, setLocationMode, locationMode,
   })
 {
-  const { theme, setTheme, colors: COLORS } = useTheme();
+  const {
+    theme,
+    colors: COLORS,
+    autoThemeOnStartup,
+    setAutoThemeOnStartup,
+  } = useTheme();
   const styles = useMemo(() => createStyles(COLORS), [COLORS]);
-
-  // store manually entered coordinates
-  const [latitude, setLatitude] = useState('');
-  const [longitude, setLongitude] = useState('');
 
   // clear manually entered coordinates
   const resetCoordinates = () => {
@@ -87,35 +77,50 @@ export default function SettingsScreen({
       onPress={Keyboard.dismiss}
     >
       <View>
-        {/* Theme selection */}
-        <Text style={styles.appearanceTitle}>Appearance</Text>
-        <View style={styles.themeRow}>
-          {themeOptions.map((option) => (
-            <TouchableOpacity
-              key={option.value}
-              style={[
-                styles.themeOption,
-                theme === option.value && styles.themeOptionActive,
-              ]}
-              onPress={() => setTheme(option.value)}
-              accessibilityRole="radio"
-              accessibilityState={{ selected: theme === option.value }}
-            >
-              <Text style={[
-                styles.themeOptionText,
-                theme === option.value && styles.themeOptionTextActive,
-              ]}>
-                {option.label}
-              </Text>
-            </TouchableOpacity>
-          ))}
+        {/* Appearance settings */}
+        <Text style={styles.title}>Appearance</Text>
+        <TouchableOpacity
+          style={styles.appearanceRow}
+          onPress={() => navigation.navigate('ThemeSelection')}
+          activeOpacity={0.75}
+          accessibilityRole="button"
+          accessibilityLabel="Choose color theme"
+        >
+          <Ionicons name="color-palette-outline" size={23} color={COLORS.accent} />
+          <View style={styles.appearanceInfo}>
+            <Text style={styles.appearanceRowTitle}>Color Theme</Text>
+            <Text style={styles.appearanceRowValue}>
+              {THEMES[theme]?.name ?? theme}
+            </Text>
+          </View>
+          <Ionicons name="chevron-forward" size={21} color={COLORS.secondaryText} />
+        </TouchableOpacity>
+
+        {/* Automatic theme selection */}
+        <View style={styles.autoThemeRow}>
+          <View style={styles.autoThemeInfo}>
+            <Text style={styles.autoThemeTitle}>Random Theme on Startup</Text>
+            <Text style={styles.autoThemeDescription}>
+              Choose a different theme each time the app starts.
+            </Text>
+          </View>
+          <Switch
+            value={autoThemeOnStartup}
+            onValueChange={setAutoThemeOnStartup}
+            trackColor={{ false: COLORS.border, true: COLORS.accent }}
+            thumbColor="#FFFFFF"
+            ios_backgroundColor={COLORS.border}
+            accessibilityLabel="Random Theme on Startup"
+          />
         </View>
 
         {/* switch between GPS and manual location */}
+        <Text style={styles.title}>Location Mode</Text>
         <View style={styles.locationSwitch}>
           <TouchableOpacity
             style={[
               styles.locationOption,
+              styles.locationOptionLeft,
               locationMode === 'gps' && styles.locationOptionActive,
             ]}
             onPress={() => setLocationMode('gps')}
@@ -129,9 +134,10 @@ export default function SettingsScreen({
           <TouchableOpacity
             style={[
               styles.locationOption,
+              styles.locationOptionRight,
               locationMode === 'manual' && styles.locationOptionActive,
             ]}
-            onPress={() => setLocationMode('manual')}
+            onPress={() => navigation.navigate('ManualLocation')}
           >
             <Text style={[
               styles.locationOptionText,
@@ -139,70 +145,6 @@ export default function SettingsScreen({
             ]}>Manual</Text>
           </TouchableOpacity>
         </View>
-
-        {/* inputs for latitude and longitude */}
-        <View style={styles.inputRow}>
-          <Text style={styles.label}>Latitude</Text>
-
-          <TextInput
-            style={styles.input}
-            value={latitude}
-            onChangeText={(text) => filterCoordinateInput(text, setLatitude)}
-            placeholder="e.g. 1.290"
-            placeholderTextColor={COLORS.secondaryText}
-            keyboardType="default"
-            editable={locationMode === 'manual'}
-          />
-        </View>
-
-        <View style={styles.inputRow}>
-          <Text style={styles.label}>Longitude</Text>
-
-          <TextInput
-            style={styles.input}
-            value={longitude}
-            onChangeText={(text) => filterCoordinateInput(text, setLongitude)}
-            placeholder="e.g. 103.851"
-            placeholderTextColor={COLORS.secondaryText}
-            keyboardType="default"
-            editable={locationMode === 'manual'}
-          />
-        </View>
-
-        {/* reset or apply manual coordinates */}
-        <View style={styles.buttonRow}>
-          <TouchableOpacity
-            style={styles.buttonInRow}
-            onPress={resetCoordinates}
-          >
-            <Text style={styles.buttonText}>
-              Reset
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              styles.buttonInRow,
-              locationMode === 'gps' && styles.disabledButton,
-            ]}
-            onPress={applyCoordinates}
-            disabled={locationMode === 'gps'}
-          >
-            <Text style={styles.buttonText}>
-              Apply Coordinates
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* predefined Singapore location */}
-        <TouchableOpacity
-          style={styles.button}
-          onPress={setDemoLocation}
-        >
-          <Text style={styles.buttonText}>
-            Use Demo Singapore Location
-          </Text>
-        </TouchableOpacity>
 
         <View style={styles.separator} />
 

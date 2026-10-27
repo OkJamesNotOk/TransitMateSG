@@ -85,6 +85,17 @@ const createStyles = (COLORS) => StyleSheet.create({
     borderWidth: 1,
   },
 
+  locationOptionLeft: {
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10,
+    borderRightWidth: 0,
+  },
+
+  locationOptionRight: {
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
+  },
+
   locationOptionActive: {
     backgroundColor: COLORS.accent,
   },
@@ -102,43 +113,68 @@ const createStyles = (COLORS) => StyleSheet.create({
     opacity: 0.4,
   },
 
-    appearanceTitle: {
+  title: {
     fontSize: 18,
     fontWeight: 'bold',
     color: COLORS.text,
     marginBottom: 12,
   },
 
-  themeRow: {
+  appearanceRow: {
     flexDirection: 'row',
-    gap: 6,
-    marginBottom: 25,
-  },
-
-  themeOption: {
-    flex: 1,
-    paddingVertical: 12,
+    alignItems: 'center',
+    gap: 12,
     backgroundColor: COLORS.card,
     borderWidth: 1,
     borderColor: COLORS.border,
     borderRadius: 10,
-    alignItems: 'center',
+    padding: 14,
+    marginBottom: 10,
   },
 
-  themeOptionActive: {
-    backgroundColor: COLORS.accent,
-    borderColor: COLORS.accent,
+  appearanceInfo: {
+    flex: 1,
   },
 
-  themeOptionText: {
+  appearanceRowTitle: {
+    fontSize: 16,
+    fontWeight: '600',
     color: COLORS.text,
-    fontWeight: 'bold',
   },
 
-  themeOptionTextActive: {
-    color: COLORS.onAccent,
+  appearanceRowValue: {
+    fontSize: 13,
+    color: COLORS.secondaryText,
+    marginTop: 3,
   },
 
+  autoThemeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    backgroundColor: COLORS.card,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    borderRadius: 10,
+    padding: 14,
+    marginBottom: 25,
+  },
+
+  autoThemeInfo: {
+    flex: 1,
+  },
+
+  autoThemeTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: COLORS.text,
+  },
+  
+  autoThemeDescription: {
+    fontSize: 13,
+    color: COLORS.secondaryText,
+    marginTop: 3,
+  },
 });
 
 export default createStyles;

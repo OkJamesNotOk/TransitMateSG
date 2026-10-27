@@ -8,6 +8,8 @@ const WEATHER_COLORS = {
 
 const THEMES = {
   dark: {
+    name: 'Dark',
+    description: 'A classic dark theme with cool blue accents.',
     background: '#0F172A',
     lighterbackground: '#233a6a',
     card: '#1E293B',
@@ -21,6 +23,8 @@ const THEMES = {
   },
 
   light:{
+    name: 'Light',
+    description: 'A clean, bright appearance with blue accents.',
     background: '#F8FAFC',
     lighterbackground: '#E2E8F0',
     card: '#FFFFFF',
@@ -34,6 +38,8 @@ const THEMES = {
   },
 
   midnight: {
+    name: 'Midnight',
+    description: 'A deeper dark theme with purple accents.',
     background: '#09090B',
     lighterbackground: '#27272A',
     card: '#18181B',
@@ -45,6 +51,127 @@ const THEMES = {
     onAccent: '#09090B',
     ...WEATHER_COLORS,
   },
+
+  cream: {
+    name: 'Cream',
+    description: 'Soft ivory, beige and taupe tones for a calm appearance.',
+    background: '#E6DCCF',
+    lighterbackground: '#D5C4B1',
+    card: '#F1E8DC',
+    cardLight: '#DED0BF',
+    text: '#3B3129',
+    secondaryText: '#655647',
+    border: '#BBAA96',
+    accent: '#78583D',
+    onAccent: '#FFF9F2',
+    ...WEATHER_COLORS,
+  },
+
+  terracotta: {
+    name: 'Terracotta',
+    description: 'Muted clay, cinnamon and earthy brown tones for a cozy and warm appearance.',
+    background: '#DCC9BC',
+    lighterbackground: '#C8AA98',
+    card: '#F0DED1',
+    cardLight: '#D9B9A6',
+    text: '#382A24',
+    secondaryText: '#624D42',
+    border: '#B4937F',
+    accent: '#80412F',
+    onAccent: '#FFF7F1',
+    ...WEATHER_COLORS,
+  },
+
+  sage: {
+    name: 'Sage',
+    description: 'Soft, muted greens with an earthy, relaxing appearance.',
+    background: '#E0E8DC',
+    lighterbackground: '#C8D8C8',
+    card: '#F2F5ED',
+    cardLight: '#D2DFD1',
+    text: '#344638',
+    secondaryText: '#586A5C',
+    border: '#AEC1AE',
+    accent: '#476B54',
+    onAccent: '#FFFFFF',
+    ...WEATHER_COLORS,
+  },
+
+  seaGlass: {
+    name: 'Sea Glass',
+    description: 'Misty blue and teal for a refreshing, understated look.',
+    background: '#D7E7EA',
+    lighterbackground: '#BDD4DA',
+    card: '#F0F7F8',
+    cardLight: '#CADFE3',
+    text: '#24454D',
+    secondaryText: '#4C6970',
+    border: '#A0BEC5',
+    accent: '#26697A',
+    onAccent: '#FFFFFF',
+    ...WEATHER_COLORS,
+  },
+
+  lavenderFog: {
+    name: 'Lavender Fog',
+    description: 'Dusty lavender and grey-purple with a gentle feel.',
+    background: '#E6E1EC',
+    lighterbackground: '#D1C7DE',
+    card: '#F6F2F9',
+    cardLight: '#DED7E7',
+    text: '#40364C',
+    secondaryText: '#6A5E74',
+    border: '#BDB0CD',
+    accent: '#65558B',
+    onAccent: '#FFFFFF',
+    ...WEATHER_COLORS,
+  },
+
+  dustyRose: {
+    name: 'Dusty Rose',
+    description: 'Faded pink, mauve and muted berry for subtle warmth.',
+    background: '#E8D9D8',
+    lighterbackground: '#D7C0C3',
+    card: '#F7EEEE',
+    cardLight: '#E7D2D5',
+    text: '#49373D',
+    secondaryText: '#735A63',
+    border: '#C7AEB5',
+    accent: '#7F5361',
+    onAccent: '#FFFFFF',
+    ...WEATHER_COLORS,
+  },
+  
+  forest: {
+    name: 'Forest',
+    description: 'Deep forest greens with soft mint accents for a calm, natural dark theme.',
+    background: '#172722',
+    lighterbackground: '#365148',
+    card: '#243A32',
+    cardLight: '#324A40',
+    text: '#ECF1E9',
+    secondaryText: '#B0C3B6',
+    border: '#456457',
+    accent: '#83BDA1',
+    onAccent: '#172722',
+    ...WEATHER_COLORS,
+  },
+
+  copperDusk: {
+    name: 'Copper Dusk',
+    description: 'Smoky charcoal and copper with a warm evening feel.',
+    background: '#29262A',
+    lighterbackground: '#57434C',
+    card: '#3F353B',
+    cardLight: '#4B3D45',
+    text: '#F1E7E0',
+    secondaryText: '#C7B8B5',
+    border: '#6F555D',
+    accent: '#D19B76',
+    onAccent: '#29262A',
+    ...WEATHER_COLORS,
+  },
+
 }
 
 // use dark theme default

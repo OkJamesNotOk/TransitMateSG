@@ -5,6 +5,7 @@ const BUS_STOPS_KEY = 'busStops';
 const BUS_ROUTES_KEY = 'busRoutes';
 const BOOKMARKED_STOPS_KEY = 'bookmarkedStops';
 const THEME_KEY = 'selectedTheme';
+const AUTO_THEME_KEY = 'autoThemeOnStartup';
 
 // Save appl data so it can be reused between sessions
 const saveCache = async (key, data) => {
@@ -47,6 +48,7 @@ export {
   BUS_ROUTES_KEY,
   BOOKMARKED_STOPS_KEY,
   THEME_KEY,
+  AUTO_THEME_KEY,
   saveCache,
   getCache,
   clearBusDataCache,

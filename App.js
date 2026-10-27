@@ -13,6 +13,7 @@ import BusRouteScreen from './screens/BusRouteScreen';
 import BusBookmarkScreen from './screens/BusBookmarkScreen';
 import SettingsScreen from './screens/SettingScreen';
 import ThemeSelectionScreen from './screens/ThemeSelectionScreen';
+import ManualLocationScreen from './screens/ManualLocationScreen';
 import useBusData from './uitilities/useBusData';
 
 import { useTheme } from './context/ThemeContext';
@@ -94,7 +95,11 @@ function BusStackNavigator({ busData, selectedCoordinates, locationMode, }) {
 }
 
 // Handles navigation between Settings and Theme Selection
-function SettingsStackNavigator({ busData, setSelectedCoordinates, locationMode, setLocationMode }) {
+function SettingsStackNavigator({ 
+  busData, selectedCoordinates, 
+  setSelectedCoordinates, locationMode, 
+  setLocationMode, 
+}) {
   const { colors: COLORS } = useTheme();
 
   return (
@@ -107,21 +112,13 @@ function SettingsStackNavigator({ busData, setSelectedCoordinates, locationMode,
     >
       <SettingsStack.Screen
         name="SettingsHome"
-        options={({ navigation }) => ({
-          title: 'Settings',
-          headerRight: () => (
-            <TouchableOpacity onPress={() => navigation.navigate('ThemeSelection')}>
-              <Text style={{ color: COLORS.accent }}>Themes</Text>
-            </TouchableOpacity>
-          ),
-        })}
+        options={{ title: 'Settings' }}
       >
         {(props) => (
           <SettingsScreen
             {...props}
             updateBusData={busData.updateBusData}
             isUpdating={busData.isUpdating}
-            setSelectedCoordinates={setSelectedCoordinates}
             removeBusData={busData.removeBusData}
             locationMode={locationMode}
             setLocationMode={setLocationMode}
@@ -134,6 +131,17 @@ function SettingsStackNavigator({ busData, setSelectedCoordinates, locationMode,
         component={ThemeSelectionScreen}
         options={{ title: 'Color Theme' }}
       />
+
+      <SettingsStack.Screen name="ManualLocation" options={{ title: 'Manual Location' }}>
+        {(props) => (
+          <ManualLocationScreen
+            {...props}
+            selectedCoordinates={selectedCoordinates}
+            setSelectedCoordinates={setSelectedCoordinates}
+            setLocationMode={setLocationMode}
+          />
+        )}
+      </SettingsStack.Screen>
     </SettingsStack.Navigator>
   );
 }
@@ -255,6 +263,7 @@ function AppContent() {
           {() => (
             <SettingsStackNavigator
               busData={busData}
+              selectedCoordinates={selectedCoordinates}
               setSelectedCoordinates={setSelectedCoordinates}
               locationMode={locationMode}
               setLocationMode={setLocationMode}

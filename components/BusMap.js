@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 
 import createStyles from '../css/BusScreenStyles';
 import { useTheme } from '../context/ThemeContext';
@@ -15,11 +15,23 @@ export default function BusMap({
 }) {
   // keep track of the bus stop selected on the map
   const [selectedStopCode, setSelectedStopCode] = useState(null);
+  const mapRef = useRef(null);
+  const targetLocation = locationMode === 'manual' ? selectedCoordinates : userLocation;
   const { colors: COLORS } = useTheme();
   const styles = useMemo(() => createStyles(COLORS), [COLORS]);
 
+  useEffect(() => {
+    if (!targetLocation || !mapRef.current) return;
+    mapRef.current.animateToRegion({
+      latitude: targetLocation.latitude,
+      longitude: targetLocation.longitude,
+      latitudeDelta: 0.006,
+      longitudeDelta: 0.006,
+    }, 350);
+  }, [locationMode, targetLocation?.latitude, targetLocation?.longitude]);
+
   // wait until a location is available before displaying the map
-  if (!userLocation) {
+  if (!targetLocation) {
     return (
       <View>
         <Text style={styles.mapLoadingText}>Loading map...</Text>
@@ -35,12 +47,13 @@ export default function BusMap({
   return (
     <View style={styles.mapContainer}>
       <MapView
+        ref={mapRef}
         style={style}
         showsUserLocation={locationMode === 'gps'}
         showsMyLocationButton={locationMode === 'gps'}
-        region={{
-          latitude: userLocation.latitude,
-          longitude: userLocation.longitude,
+        initialRegion={{
+          latitude: targetLocation.latitude,
+          longitude: targetLocation.longitude,
           latitudeDelta: 0.006,
           longitudeDelta: 0.006,
         }}
