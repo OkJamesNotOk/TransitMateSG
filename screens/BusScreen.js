@@ -7,7 +7,7 @@ import {
   ScrollView
 } from 'react-native';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import BusCard from '../components/BusCard';

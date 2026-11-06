@@ -9,7 +9,7 @@ const createStyles = (COLORS) => StyleSheet.create({
 
   contentContainer: {
     padding: 15,
-    paddingBottom: 35,
+    paddingBottom: 10,
   },
 
   description: {
@@ -101,7 +101,7 @@ const createStyles = (COLORS) => StyleSheet.create({
   },
 
   mapContainer: {
-    height: 330,
+    flex: 1,
     borderRadius: 12,
     overflow: 'hidden',
     borderWidth: 1,
@@ -117,7 +117,19 @@ const createStyles = (COLORS) => StyleSheet.create({
     fontSize: 12,
     color: COLORS.secondaryText,
     marginTop: 8,
-    marginBottom: 20,
+    marginBottom: 0,
+  },
+
+  mapSection: {
+    flex: 1,
+    minHeight: 160,
+    paddingHorizontal: 15,
+  },
+
+  actionSection: {
+    paddingHorizontal: 15,
+    paddingTop: 10,
+    paddingBottom: 15,
   },
 
 });

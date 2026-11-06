@@ -194,23 +194,6 @@ const createStyles = (COLORS) => StyleSheet.create({
     justifyContent: 'center',
   },
 
-  selectedStopButton: {
-    position: 'absolute',
-    bottom: 15,
-    alignSelf: 'center',
-
-    backgroundColor: COLORS.accent,
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-    borderRadius: 8,
-
-    alignItems: 'center',
-    justifyContent: 'center',
-
-    zIndex: 10,
-    elevation: 5,
-  },
-
   nearbyTitleContainer: {
     marginBottom: 8,
   },
@@ -276,6 +259,60 @@ const createStyles = (COLORS) => StyleSheet.create({
 
   mapLoadingText: {
     color: COLORS.text,
+  },
+
+  mapActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 8,
+  },
+
+  recenterButton: {
+    minWidth: 44,
+    minHeight: 44,
+    backgroundColor: COLORS.card,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  selectedStopButton: {
+    maxWidth: '85%',
+    minHeight: 44,
+    backgroundColor: COLORS.accent,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  mapOverlay: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 12,
+    zIndex: 2,
+    elevation: 2,
+  },
+
+  mapOverlayTop: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+
+  mapOverlaySpacer: {
+    flex: 1,
+  },
+
+  mapOverlayBottom: {
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
 
 });

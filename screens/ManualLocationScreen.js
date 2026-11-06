@@ -1,9 +1,10 @@
 
-import { ScrollView, View, Text, TextInput, TouchableOpacity, Keyboard } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Keyboard } from 'react-native';
 import { useMemo, useState, useRef } from 'react';
-import MapView, { Marker } from 'react-native-maps';
 import createStyles from '../css/ManualLocationScreenStyles';
 import { useTheme } from '../context/ThemeContext';
+
+import LeafletMap from '../components/LeafletMap';
 
 export default function ManualLocationScreen({ navigation, selectedCoordinates, setSelectedCoordinates, setLocationMode }) {
   const { colors: COLORS } = useTheme();
@@ -35,11 +36,7 @@ export default function ManualLocationScreen({ navigation, selectedCoordinates, 
 
   const centerMapOnDraft = () => {
     if (!draftCoordinates) return;
-    mapRef.current?.animateToRegion({
-      ...draftCoordinates,
-      latitudeDelta: 0.006,
-      longitudeDelta: 0.006,
-    }, 350);
+    mapRef.current?.centerOn(draftCoordinates);
   };
 
   const resetCoordinates = () => {
@@ -48,14 +45,10 @@ export default function ManualLocationScreen({ navigation, selectedCoordinates, 
   };
 
   const setDemoLocation = () => {
+    const coordinate = { latitude: 1.290, longitude: 103.851 };
     setLatitude('1.290');
     setLongitude('103.851');
-    mapRef.current?.animateToRegion({
-      latitude: 1.290,
-      longitude: 103.851,
-      latitudeDelta: 0.006,
-      longitudeDelta: 0.006,
-    }, 350);
+    mapRef.current?.centerOn(coordinate);
   };
 
   const applyCoordinates = () => {
@@ -66,85 +59,87 @@ export default function ManualLocationScreen({ navigation, selectedCoordinates, 
     navigation.goBack();
   };
 
+
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer} keyboardShouldPersistTaps="handled">
-      <Text style={styles.description}>Enter coordinates or select a location on the map.</Text>
+    <View style={styles.container}>
+      {/* Coordinate inputs */}
+      <View style={styles.contentContainer}>
+        <Text style={styles.description}>Enter coordinates or select a location on the map.</Text>
 
-      <View style={styles.coordinateRow}>
-        <View style={styles.coordinateField}>
-          <Text style={styles.label}>Latitude</Text>
-          <TextInput
-            style={styles.input}
-            value={latitude}
-            onChangeText={(text) => filterCoordinateInput(text, setLatitude)}
-            placeholder="e.g. 1.290"
-            placeholderTextColor={COLORS.secondaryText}
-            keyboardType="numbers-and-punctuation"
-            onEndEditing={centerMapOnDraft}
-          />
-        </View>
-        <View style={styles.coordinateField}>
-          <Text style={styles.label}>Longitude</Text>
-          <TextInput
-            style={styles.input}
-            value={longitude}
-            onChangeText={(text) => filterCoordinateInput(text, setLongitude)}
-            placeholder="e.g. 103.851"
-            placeholderTextColor={COLORS.secondaryText}
-            keyboardType="numbers-and-punctuation"
-            onEndEditing={centerMapOnDraft}
-          />
-        </View>
-      </View>
-
-      <Text style={styles.hint}>Latitude: -90 to 90 | Longitude: -180 to 180</Text>
-
-      <View style={styles.mapContainer}>
-        <MapView
-          ref={mapRef}
-          style={styles.map}
-          initialRegion={{
-            latitude: selectedCoordinates?.latitude ?? 1.290,
-            longitude: selectedCoordinates?.longitude ?? 103.851,
-            latitudeDelta: 0.006,
-            longitudeDelta: 0.006,
-          }}
-          onPress={(event) => updateCoordinatesFromMap(event.nativeEvent.coordinate)}
-        >
-          {draftCoordinates && (
-            <Marker
-              coordinate={draftCoordinates}
-              title="Selected Location"
-              draggable
-              stopPropagation
-              onDragEnd={(event) => updateCoordinatesFromMap(event.nativeEvent.coordinate)}
+        <View style={styles.coordinateRow}>
+          <View style={styles.coordinateField}>
+            <Text style={styles.label}>Latitude</Text>
+            <TextInput
+              style={styles.input}
+              value={latitude}
+              onChangeText={(text) => filterCoordinateInput(text, setLatitude)}
+              placeholder="e.g. 1.290"
+              placeholderTextColor={COLORS.secondaryText}
+              keyboardType="numbers-and-punctuation"
+              onEndEditing={centerMapOnDraft}
             />
-          )}
-        </MapView>
-      </View>
-      <Text style={styles.mapHint}>Tap the map or drag the marker to select a location.</Text>
+          </View>
+          <View style={styles.coordinateField}>
+            <Text style={styles.label}>Longitude</Text>
+            <TextInput
+              style={styles.input}
+              value={longitude}
+              onChangeText={(text) => filterCoordinateInput(text, setLongitude)}
+              placeholder="e.g. 103.851"
+              placeholderTextColor={COLORS.secondaryText}
+              keyboardType="numbers-and-punctuation"
+              onEndEditing={centerMapOnDraft}
+            />
+          </View>
+        </View>
 
-      <View style={styles.buttonRow}>
-        <TouchableOpacity style={styles.secondaryButton} onPress={resetCoordinates}>
-          <Text style={styles.secondaryButtonText}>Reset</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.secondaryButton} onPress={setDemoLocation}>
-          <Text style={styles.secondaryButtonText}>Demo Singapore</Text>
-        </TouchableOpacity>
+        <Text style={styles.hint}>Latitude: -90 to 90 | Longitude: -180 to 180</Text>
       </View>
 
-      <View style={styles.actionRow}>
-        <TouchableOpacity style={styles.secondaryButton} onPress={() => navigation.goBack()}>
-          <Text style={styles.secondaryButtonText}>Cancel</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.primaryButton, !isValidCoordinates && styles.disabledButton]}
-          onPress={applyCoordinates}
-          disabled={!isValidCoordinates}
-        >
-          <Text style={styles.primaryButtonText}>Apply Location</Text>
-        </TouchableOpacity>
+      {/* Interactive map    */}
+      <View style={styles.mapSection}>
+        <View style={styles.mapContainer}>
+          <LeafletMap
+            ref={mapRef}
+            style={styles.map}
+            initialCenter={selectedCoordinates ?? { latitude: 1.290, longitude: 103.851 }}
+            initialZoom={16}
+            markerCoordinate={draftCoordinates}
+            onMapPress={updateCoordinatesFromMap}
+            onMarkerDragEnd={updateCoordinatesFromMap}
+            onReady={() => {
+              if (draftCoordinates) mapRef.current?.centerOn(draftCoordinates);
+            }}
+          />
+        </View>
+        <Text style={styles.mapHint}>Tap the map or drag the marker to select a location.</Text>
       </View>
-    </ScrollView>
+
+      {/* Action buttons */}
+      <View style={styles.actionSection}>
+        <View style={styles.buttonRow}>
+          <TouchableOpacity style={styles.secondaryButton} onPress={resetCoordinates}>
+            <Text style={styles.secondaryButtonText}>Reset</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.secondaryButton} onPress={setDemoLocation}>
+            <Text style={styles.secondaryButtonText}>Demo Singapore</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.actionRow}>
+          <TouchableOpacity style={styles.secondaryButton} onPress={() => navigation.goBack()}>
+            <Text style={styles.secondaryButtonText}>Cancel</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.primaryButton, !isValidCoordinates && styles.disabledButton]}
+            onPress={applyCoordinates}
+            disabled={!isValidCoordinates}
+          >
+            <Text style={styles.primaryButtonText}>Apply Location</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
   );
+
 }

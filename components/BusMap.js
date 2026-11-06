@@ -1,9 +1,10 @@
 import { View, Text, TouchableOpacity } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
 import { useState, useMemo, useRef, useEffect } from 'react';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import createStyles from '../css/BusScreenStyles';
 import { useTheme } from '../context/ThemeContext';
+import LeafletMap from './LeafletMap';
 
 export default function BusMap({
   userLocation,
@@ -21,13 +22,8 @@ export default function BusMap({
   const styles = useMemo(() => createStyles(COLORS), [COLORS]);
 
   useEffect(() => {
-    if (!targetLocation || !mapRef.current) return;
-    mapRef.current.animateToRegion({
-      latitude: targetLocation.latitude,
-      longitude: targetLocation.longitude,
-      latitudeDelta: 0.006,
-      longitudeDelta: 0.006,
-    }, 350);
+    if (!targetLocation) return;
+    mapRef.current?.centerOn(targetLocation);
   }, [locationMode, targetLocation?.latitude, targetLocation?.longitude]);
 
   // wait until a location is available before displaying the map
@@ -41,70 +37,54 @@ export default function BusMap({
 
   // get bus data for the selected marker
   const selectedStop = nearbyStops.find(
-    (stop) => stop.BusStopCode === selectedStopCode
+    (stop) => String(stop.BusStopCode) === selectedStopCode
   );
 
   return (
     <View style={styles.mapContainer}>
-      <MapView
+      <LeafletMap
         ref={mapRef}
         style={style}
-        showsUserLocation={locationMode === 'gps'}
-        showsMyLocationButton={locationMode === 'gps'}
-        initialRegion={{
-          latitude: targetLocation.latitude,
-          longitude: targetLocation.longitude,
-          latitudeDelta: 0.006,
-          longitudeDelta: 0.006,
-        }}
-      >
+        enableMapSelection={false}
+        initialCenter={targetLocation}
+        initialZoom={16}
+        busStops={nearbyStops.map((stop) => ({
+          code: String(stop.BusStopCode),
+          latitude: Number(stop.Latitude),
+          longitude: Number(stop.Longitude),
+          description: stop.Description,
+          roadName: stop.RoadName,
+        }))}
+        selectedStopCode={selectedStopCode}
+        locationCoordinate={targetLocation}
+        locationMode={locationMode}
+        onStopPress={setSelectedStopCode}
+        onReady={() => mapRef.current?.centerOn(targetLocation)}
+      />
 
-        {/* Nearby bus stops markers*/}
-        {nearbyStops.map((stop) => (
-          <Marker
-            key={stop.BusStopCode}
-            coordinate={{
-              latitude: stop.Latitude,
-              longitude: stop.Longitude,
-            }}
-            title={stop.Description}
-            description={`${stop.BusStopCode} - ${stop.RoadName}`}
-            onPress={() => setSelectedStopCode(stop.BusStopCode)}
-            anchor={{x: 1, y: 1}}
-          >
-          </Marker>
-        ))}
-
-        {/* custom pin styling to show location in manual mode */}
-        {locationMode === 'manual' && selectedCoordinates && (
-          <Marker
-            coordinate={{
-              latitude: selectedCoordinates.latitude,
-              longitude: selectedCoordinates.longitude,
-            }}
-            title="Selected Location"
-            description="Manual location"
-            zIndex={999}
-          >
-            <View style={styles.manualLocationMarker}>
-              <View style={styles.manualLocationDot} />
-            </View>
-          </Marker>
-        )}
-
-      </MapView>
-
-      {/* Open bus arrivals for the selected marker */}
-      {selectedStop && (
-        <TouchableOpacity
-          style={styles.selectedStopButton}
-          onPress={() => selectBusStop(selectedStop)}
-        >
-          <Text style={styles.buttonText}>
-            View Bus Stop {selectedStopCode}
-          </Text>
-        </TouchableOpacity>
-      )}
+      <View style={styles.mapOverlay} pointerEvents="box-none">
+        <View style={styles.mapOverlayTop} pointerEvents="box-none">
+          {locationMode === 'gps' && (
+            <TouchableOpacity
+              style={styles.recenterButton}
+              onPress={() => mapRef.current?.centerOn(targetLocation)}
+            >
+              <Ionicons name="locate" size={22} color={COLORS.accent} />
+            </TouchableOpacity>
+          )}
+        </View>
+        <View style={styles.mapOverlaySpacer} pointerEvents="none" />
+        <View style={styles.mapOverlayBottom} pointerEvents="box-none">
+          {selectedStop && (
+            <TouchableOpacity
+              style={styles.selectedStopButton}
+              onPress={() => selectBusStop(selectedStop)}
+            >
+              <Text style={styles.buttonText}>View Bus Stop {selectedStopCode}</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      </View>
     </View>
   );
 }

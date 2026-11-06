@@ -56,7 +56,7 @@ export default function BusStopSearch({
             setSearchCode(text);
             setShowDropdown(true);
           }}
-          onFocus={() => {
+          onPressIn={() => {
             setShowDropdown(true);
           }}
         />
